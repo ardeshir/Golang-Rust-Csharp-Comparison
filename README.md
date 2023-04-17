@@ -3,6 +3,5 @@
 
  # CSharp 
 
-- dotnet add package dotnet-test-nunit --version 3.4.0-beta-3 
-- dotnet new nunit -n TestCsvParser  
-- dotnet add TestCsvParser.csproj reference CsvParser.csproj  
+## Test Docs: 
+- NUnit testing [https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-with-nunit]
