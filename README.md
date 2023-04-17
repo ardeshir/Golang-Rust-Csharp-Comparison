@@ -4,6 +4,8 @@
  # CSharp 
 
 ## Test Docs: 
+- Nuget [ https://www.nuget.org/packages/NUnit]
+- dotnet add package NUnit --version 3.13.3
 - NUnit testing [https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-with-nunit]
 ```Microsoft (R) Test Execution Command Line Tool Version 17.3.1 (arm64)
 Copyright (c) Microsoft Corporation.  All rights reserved.
