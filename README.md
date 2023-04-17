@@ -1,7 +1,25 @@
 # Golang, Rust, CSharp Comparison
  A golang, rust, csharp fetch csv file parser with postgres db
 
- # CSharp 
+ # Golang Test
+## These tests cover a few different scenarios: 
+1. Testing with a valid URL and database connection string
+2. Testing with an invalid URL
+3. Testing with an invalid database connection string 
+ # Test Docs:
+ - go test 
+```go test
+Data inserted successfully!
+Data inserted successfully!
+--- FAIL: TestProcessCSVData (0.62s)
+    main_test.go:15: Expected an error, but got none
+FAIL
+exit status 1
+FAIL    csv_parser      0.995s 
+```
+
+
+# CSharp  Test
 
 ## Test Docs: 
 - Nuget [ https://www.nuget.org/packages/NUnit]
