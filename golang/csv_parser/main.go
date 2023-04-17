@@ -101,4 +101,54 @@ func main() {
     }    
     
     fmt.Println("Data inserted successfully!")    
+    // end of insert
+
+    // Select all rows from the api table  
+    rows, err := db.Query("SELECT * FROM api")  
+    if err != nil {  
+        fmt.Println(err)  
+        return  
+    }  
+    defer rows.Close()  
+  
+    // Get column names  
+    columns, err := rows.Columns()  
+    if err != nil {  
+        fmt.Println(err)  
+        return  
+    }  
+  
+    // Create a slice for storing the values  
+    values := make([]sql.RawBytes, len(columns))  
+  
+    // Create a slice for storing the pointers to the values  
+    scanArgs := make([]interface{}, len(values))  
+    for i := range values {  
+        scanArgs[i] = &values[i]  
+    }  
+  
+    // Print the table  
+    fmt.Printf("Table: %s\n", "api")  
+    for rows.Next() {  
+        // Scan the values into the pointers  
+        err = rows.Scan(scanArgs...)  
+        if err != nil {  
+            fmt.Println(err)  
+            return  
+        }  
+  
+        // Print the values  
+        for i, col := range values {  
+            fmt.Printf("%s: %s ", columns[i], string(col))  
+        }  
+        fmt.Println("")  
+    }  
+  
+    // Check for errors during row iteration  
+    if err = rows.Err(); err != nil {  
+        fmt.Println(err)  
+        return  
+    }  
+
+    // end of print table
 }   
