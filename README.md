@@ -19,6 +19,11 @@ FAIL    csv_parser      0.995s
 ```
 
 
+# Rust Test
+## In these test functions, we create sample data for each test case and call the function being tested with the sample data. We then use assertions to check ## that the function behaves correctly for each test case. 
+
+
+
 # CSharp  Test
 
 ## Test Docs: 

@@ -7,7 +7,7 @@ use csv::ReaderBuilder;
 use postgres::{Client, NoTls};  
   
 #[derive(Debug)]  
-struct Record {  
+pub struct Record {  
     id: i32,  
     url: String,  
     name: String,  
