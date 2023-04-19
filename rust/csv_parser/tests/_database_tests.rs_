@@ -1,0 +1,29 @@
+// tests/database_tests.rs  
+#[cfg(test)]  
+mod database_tests {  
+    use postgres::{Client, NoTls};  
+    use Database;
+  
+    #[test]  
+    fn test_database_query() {  
+        // Connect to database  
+        let mut client = Client::connect("postgresql://postgres:postgres@localhost:5432/data", NoTls)  
+            .expect("Failed to connect to database");  
+  
+        // Create test table  
+        client.batch_execute("CREATE TEMP TABLE test (id INT PRIMARY KEY, name VARCHAR)")  
+            .expect("Failed to create test table");  
+  
+        // Insert test data  
+        client.execute("INSERT INTO test (id, name) VALUES ($1, $2)", &[&1, &"foo"])  
+            .expect("Failed to insert test data");  
+  
+        // Query test data  
+        let rows = client.query("SELECT id, name FROM test", &[])  
+            .expect("Failed to query test data");  
+        assert_eq!(rows.len(), 1);  
+        let row = rows.get(0);  
+        assert_eq!(row.get::<_, i32>(0), 1);  
+        assert_eq!(row.get::<_, String>(1), "foo".to_string());  
+    }  
+}  

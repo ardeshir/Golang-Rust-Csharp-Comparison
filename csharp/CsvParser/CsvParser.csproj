@@ -9,6 +9,9 @@
 
   <ItemGroup>
     <!-- PackageReference Include="dotnet-test-nunit" Version="3.4.0-beta-3" / -->
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
     <PackageReference Include="Npgsql" Version="7.0.2" />
   </ItemGroup>
 
