@@ -1,4 +1,6 @@
 # CsvParserWeb
+Evolving the CLI to also run a Web Service with --web (or basic cli --url)
+The webservice --web listense for param url /CsvParser?url=https://ardeshir.io.file.csv 
 
 ## Rep 
 - dotnet dev-certs https --clean
