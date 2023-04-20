@@ -55,4 +55,22 @@ Passed!  - Failed:     0, Passed:     2, Skipped:     0, Total:     2, Duration:
 - python3 csv_parser.py --url https://www.ardeshir.io/file.csv --web  
 - navigate to http://127.0.0.1:5000/api 
 
+## Python Tests config
+- pip install pytest pytest-cov  
+- pytest --cov=csv_parser tests/ 
 
+```
+============ test session starts  =======================
+Data inserted successfully!
+
+---------- coverage: platform darwin, python 3.11.1-final-0 ----------
+Name            Stmts   Miss  Cover
+-----------------------------------
+csv_parser.py      58     15    74%
+-----------------------------------
+TOTAL              58     15    74%
+
+===============short test summary info =======================
+FAILED tests/test_csv_parser.py::test_print_table_api - AssertionError: assert 'id: 1' in 'Table: api\nid: 32 url: http://example.com name: Example API created: 1234567890 \n'
+FAILED tests/test_csv_parser.py::test_process_csv_data - AssertionError: assert 7 == 3
+```
