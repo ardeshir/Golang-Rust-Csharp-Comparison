@@ -18,7 +18,7 @@ exit status 1
 FAIL    csv_parser      0.995s 
 ```
 # Golang Web Service
-- Use --web, to expose :8080/api service 
+- Use go run main.go --web to expose :8080/api service 
 
 # Rust Test
 In these test functions, we create sample data for each test case and call the function being tested with the sample data. We then use assertions to check ## that the function behaves correctly for each test case. 
@@ -43,3 +43,15 @@ Passed!  - Failed:     0, Passed:     2, Skipped:     0, Total:     2, Duration:
 
 - Evolving the CLI to also run a Web Service with --web (or basic cli --url)
 - The webservice --web listense for param url /CsvParser?url=https://ardeshir.io.file.csv 
+
+
+# Scripting Languages: (for extra points, no guarantee of support ;P) 
+## Python3 venv
+
+- python3 -m venv env  
+- source env/bin/activate 
+- pip install psycopg2-binary requests Flask  
+- python3 csv_parser.py --url https://www.ardeshir.io/file.csv --web  
+- navigate to http://127.0.0.1:5000/api 
+
+
