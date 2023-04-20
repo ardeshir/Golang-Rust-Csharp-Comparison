@@ -5,7 +5,8 @@ import (
     "encoding/csv"      
     "flag"      
     "fmt"      
-    "net/http"      
+    "net/http" 
+    "encoding/json"    
       
     _ "github.com/lib/pq"      
 )      
@@ -140,23 +141,81 @@ func processCSVData(url string, dbConnString string) error {
     return nil  
 }  
 
+func apiHandler(w http.ResponseWriter, r *http.Request) {  
+    dbConnString := "postgres://postgres:postgres@localhost:5432/data?sslmode=disable"  
+
+    db, err := sql.Open("postgres", dbConnString)  
+
+    if err != nil {  
+        http.Error(w, err.Error(), http.StatusInternalServerError)  
+        return  
+    }  
+    defer db.Close()  
+  
+    rows, err := db.Query("SELECT * FROM api")  
+    if err != nil {  
+        http.Error(w, err.Error(), http.StatusInternalServerError)  
+        return  
+    }  
+    defer rows.Close()  
+  
+    type API struct {  
+        ID      int    `json:"id"`  
+        URL     string `json:"url"`  
+        Name    string `json:"name"`  
+        Created string `json:"created"`  
+    }  
+  
+    apis := make([]API, 0)  
+    for rows.Next() {  
+        var api API  
+        err := rows.Scan(&api.ID, &api.URL, &api.Name, &api.Created)  
+        if err != nil {  
+            http.Error(w, err.Error(), http.StatusInternalServerError)  
+            return  
+        }  
+        apis = append(apis, api)  
+    }  
+  
+    if err := rows.Err(); err != nil {  
+        http.Error(w, err.Error(), http.StatusInternalServerError)  
+        return  
+    }  
+  
+    w.Header().Set("Content-Type", "application/json")  
+    json.NewEncoder(w).Encode(apis)  
+}  
+
 func main() {      
 	   
-    url := flag.String("url", "https://www.ardeshir.io/file.csv", "The URL of the CSV file to fetch")    
+    url := flag.String("url", "https://www.ardeshir.io/file.csv", "The URL of the CSV file to fetch")   
+    web := flag.Bool("web", false, "Start the application as a web service")  
+
     flag.Parse()    
     
 	dbConnString := "postgres://postgres:postgres@localhost:5432/data?sslmode=disable" 
 
-	err := processCSVData(*url , dbConnString)
-	if err != nil {
-		fmt.Println(err)
-		return 
-	}
-	 
-	err = printTableApi(dbConnString)
-	if err != nil {
-		fmt.Println(err)
-		return 
-	}
+    err := processCSVData(*url , dbConnString)
+    if err != nil {
+        fmt.Println(err)
+        return 
+    }
 
-}  
+    err = printTableApi(dbConnString)
+    if err != nil {
+        fmt.Println(err)
+        return 
+    }
+    // If you want a web service ...
+    if *web {  
+        // Start the web service 
+        http.HandleFunc("/api", apiHandler)  
+        
+        err := http.ListenAndServe(":8080", nil)  
+        if err != nil {  
+            fmt.Println(err) 
+        } 
+    
+    }  
+
+} 
