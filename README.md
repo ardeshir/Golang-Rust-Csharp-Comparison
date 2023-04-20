@@ -17,7 +17,8 @@ FAIL
 exit status 1
 FAIL    csv_parser      0.995s 
 ```
-
+# Golang 
+- Use --web, to expose :8080/api service 
 
 # Rust Test
 In these test functions, we create sample data for each test case and call the function being tested with the sample data. We then use assertions to check ## that the function behaves correctly for each test case. 
