@@ -94,4 +94,9 @@ FAILED tests/test_csv_parser.py::test_process_csv_data - AssertionError: assert 
 - eslint --fix src/*.ts | eslint src/*.ts 
 
 ## Run 
-- npx ts-node csv_parser.ts
+- npx ts-node csv_parser.ts --web
+```Server started on port 3000
+Table: api
+Data inserted successfully!
+```
+

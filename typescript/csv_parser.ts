@@ -93,7 +93,8 @@ async function apiHandler(): Promise<string> {
 
     });    
         await  client.end(); 
-        return json.stringify(apis);    
+        await json.writeFile('apis.json', apis); 
+        return 'Data written to apis.json' ;
 
     } catch(err) {
        throw err;
@@ -116,7 +117,7 @@ if (require.main === module) {
 
 
     const dbConnString = 'postgres://postgres:postgres@localhost:5432/data';
-    
+
     processCsvData(args.url, dbConnString);
 
     printTableApi(dbConnString);
@@ -125,8 +126,9 @@ if (require.main === module) {
         const express = require('express');
         const app = express();
 
-        app.get('/api', (req, res) => {    
-            res.send(apiHandler());    
+        app.get('/api', async (req, res) => {    
+           const data = await apiHandler(); // Await the results 
+           res.send(data);    
         });    
 
         app.listen(3000, () => {    
