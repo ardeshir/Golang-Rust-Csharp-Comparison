@@ -21,6 +21,7 @@
   "homepage": "https://github.com/ardeshir/Golang-Rust-Csharp-Comparison#readme",
   "devDependencies": {
     "@types/request": "^2.48.8",
+    "fast-csv": "^4.3.6",
     "request": "^2.88.2",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
