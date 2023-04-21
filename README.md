@@ -74,3 +74,30 @@ TOTAL              58     15    74%
 FAILED tests/test_csv_parser.py::test_print_table_api - AssertionError: assert 'id: 1' in 'Table: api\nid: 32 url: http://example.com name: Example API created: 1234567890 \n'
 FAILED tests/test_csv_parser.py::test_process_csv_data - AssertionError: assert 7 == 3
 ```
+# TypeScript 
+## TS Docs
+(nvm is my choice of node manager) 
+- nvm install v18
+- npm init
+- npm install -g ts-node
+- npm install --save express 
+- npm install -g request 
+- npm install --save-dev @types/request   
+- npm install -g typescript
+- npm install --save yargs  
+- npm install --save pg csv-parser jsonfile
+## To Prettier or not to prettier
+- npm install --save-dev prettier
+- prettier --write src/*.ts.
+## Eslint
+- npm install --save-dev eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
+- eslint --fix src/*.ts | eslint src/*.ts 
+
+## Run 
+- npm install 
+- npx ts-node src/csv_parser.ts --web
+```Server started on port 3000
+Table: api
+Data inserted successfully!
+```
+
