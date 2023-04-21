@@ -3,13 +3,10 @@
 (nvm is my choice of node manager) 
 - nvm install v18
 - npm init
-- npm install -g ts-node
-- npm install --save express 
-- npm install -g request 
+- npm install -g typescript ts-node
+- npm install --save request express 
 - npm install --save-dev @types/request   
-- npm install -g typescript
-- npm install --save yargs  
-- npm install --save pg csv-parser jsonfile
+- npm install --save pg csv-parser jsonfile yargs 
 ## To Prettier or not to prettier
 - npm install --save-dev prettier
 - prettier --write src/*.ts.
