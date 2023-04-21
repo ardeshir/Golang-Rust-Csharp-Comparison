@@ -72,8 +72,8 @@ async function processCsvData(url: string, dbConnString: string) {
         try {  
           await client.query(  
             `  
-              INSERT INTO api (url, name, created)  
-              VALUES ($1, $2, $3);  
+              INSERT INTO api (id, url, name, created)  
+              VALUES (DEFAULT, $1, $2, $3);  
             `,  
             [row.url, row.name, row.created]  
           );  
