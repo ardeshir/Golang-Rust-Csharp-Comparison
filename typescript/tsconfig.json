@@ -5,8 +5,7 @@
     "sourceMap": true  
   },  
   "include": [  
-    "src/**/*.ts", "src/csv_parser.ts" 
-  ],
+    "src/**/*.ts", "src/csv_parser.ts"],
   "exclude": [  
     "node_modules",  
     "**/*.spec.ts"  

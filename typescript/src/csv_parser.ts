@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as json from 'jsonfile';  
 import * as pg from 'pg';  
 import * as request from 'request';  
+import express from 'express';  
   
 interface ApiRow {  
   id: number;  
@@ -91,29 +92,19 @@ async function processCsvData(url: string, dbConnString: string) {
   }  
 }  
   
-async function apiHandler(): Promise<string> {  
+async function apiHandler(req: any, res: any): Promise<void> {  
   const dbConnString = 'postgres://postgres:postgres@localhost:5432/data';  
   const client = new pg.Client(dbConnString);  
   await client.connect();  
   
   try {  
-    const res = await client.query('SELECT * FROM api;');  
-    const rows: any[] = res.rows;  
-    const columns = res.fields.map((field) => field.name);  
+    const result = await client.query('SELECT * FROM api;');  
+    const rows: any[] = result.rows;  
   
-    const apis: Api[] = rows.map((row) => {  
-      const api: Api = { id: 0, url: '', name: '', created: 0 };  
-      columns.forEach((column, index) => {  
-        api[column] = row[column];  
-      });  
-      return api;  
-    });  
-  
-    await json.writeFile('apis.json', apis);  
-    return 'Data written to apis.json';  
+    res.json(rows);  
   } catch (err) {  
     console.error(err);  
-    throw err;  
+    res.status(500).send('Internal Server Error');  
   } finally {  
     await client.end();  
   }  
@@ -139,10 +130,7 @@ if (require.main === module) {
     const express = require('express');  
     const app = express();  
   
-    app.get('/api', async (req, res) => {  
-      const data = await apiHandler(); // Await the results  
-      res.send(data);  
-    });  
+    app.get('/api', apiHandler);  
   
     app.listen(3000, () => {  
       console.log('Server started on port 3000');  
