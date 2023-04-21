@@ -6,10 +6,10 @@ import * as request from 'request';
 import express from 'express';  
   
 interface ApiRow {  
-  id: number;  
-  url: string;  
-  name: string;  
-  created: number;  
+  Id: number;  
+  Url: string;  
+  Name: string;  
+  Created: number;  
 }  
   
 interface Api {  
@@ -75,7 +75,7 @@ async function processCsvData(url: string, dbConnString: string) {
               INSERT INTO api (id, url, name, created)  
               VALUES (DEFAULT, $1, $2, $3);  
             `,  
-            [row.url, row.name, row.created]  
+            [row.Url, row.Name, row.Created]  
           );  
         } catch (err) {  
           console.error(err);  
