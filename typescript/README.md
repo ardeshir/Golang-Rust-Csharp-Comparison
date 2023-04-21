@@ -26,8 +26,5 @@
 
 # Improvments
 - Use a tool like Knex.js or TypeORM to define and manage your database schema programmatically. This can help ensure that your database schema is always in sync with your code.
-## TypeORM csv_parser_typeorm
-- npm install --save typeorm pg reflect-metadata  
-- npx ts-node csv_parser_typeorm.ts
 
 
