@@ -1,6 +1,6 @@
 import * as csv from 'csv-parser';  
 import * as fs from 'fs';  
-import * as json from 'jsonfile';  
+import * as jsonfile from 'jsonfile';  
 import * as pg from 'pg';  
 import * as request from 'request';  
 import express from 'express';  
@@ -68,7 +68,7 @@ async function processCsvData(url: string, dbConnString: string) {
         throw err;  
       })  
       .pipe(csv())  
-      .on('data', async (row: any) => {  
+      .on('data', async (row: ApiRow) => {  
         try {  
           await client.query(  
             `  
