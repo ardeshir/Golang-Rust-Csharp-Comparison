@@ -15,7 +15,8 @@
 - eslint --fix src/*.ts | eslint src/*.ts 
 
 ## Run 
-- npx ts-node csv_parser.ts
+- npm install 
+- npx ts-node src/csv_parser.ts --web
 
 ## When in doubt clean house 
 -- rm -rf node_modules  
