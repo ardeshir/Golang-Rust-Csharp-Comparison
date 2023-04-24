@@ -218,7 +218,7 @@ int main(int argc, char** argv) {
     // adding http_handler 
     struct MHD_Daemon* daemon;  
   
-    daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY, 8080, NULL, NULL,  
+    daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY, 8000, NULL, NULL,  
                               &http_handler, conn, MHD_OPTION_END);  
     if (NULL == daemon) {  
         fprintf(stderr, "Failed to start web server\n");  
@@ -226,7 +226,7 @@ int main(int argc, char** argv) {
         exit(1);  
     }  
   
-    printf("Web server running on port 8080...\n");  /// with http_handler
+    printf("Web server running on port 8000...\n");  /// with http_handler
     
     if (is_web) {  
         // Start web service  
