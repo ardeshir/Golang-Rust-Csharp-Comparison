@@ -8,32 +8,6 @@
   
 #define DB_CONN_STRING "dbname=data user=postgres password=postgres host=localhost port=5432 sslmode=disable"  
 
-// adding http_hander
-
-int http_handler(void* cls, struct MHD_Connection* connection,  
-                 const char* url, const char* method, const char* version,  
-                 const char* upload_data, size_t* upload_data_size, void** con_cls) {  
-    PGconn* conn = (PGconn*)cls;  
-    char* response;  
-    struct MHD_Response* mhd_response;  
-    int ret;  
-  
-    if (!strcmp(method, "GET") && !strcmp(url, "/api")) {  
-        response = api_handler(conn);  
-        mhd_response = MHD_create_response_from_buffer(strlen(response),  
-                                                       response, MHD_RESPMEM_MUST_FREE);  
-        MHD_add_response_header(mhd_response, "Content-Type", "application/json");  
-        ret = MHD_queue_response(connection, MHD_HTTP_OK, mhd_response);  
-        MHD_destroy_response(mhd_response);  
-        return ret;  
-    } else {  
-        mhd_response = MHD_create_response_from_buffer(strlen("Not found"), "Not found",  
-                                                       MHD_RESPMEM_PERSISTENT);  
-        ret = MHD_queue_response(connection, MHD_HTTP_NOT_FOUND, mhd_response);  
-        MHD_destroy_response(mhd_response);  
-        return ret;  
-    }  
-} // end of http_handler
   
 void print_table_api(PGconn* conn) {  
    
@@ -181,6 +155,39 @@ char* api_handler(PGconn* conn) {
     return json_str;  
 }  
 
+
+// adding http_hander
+
+int http_handler(void* cls, struct MHD_Connection* connection,  
+                 const char* url, const char* method, const char* version,  
+                 const char* upload_data, size_t* upload_data_size, void** con_cls) {  
+    PGconn* conn = (PGconn*)cls;  
+    char* response;  
+    struct MHD_Response* mhd_response;  
+    int ret;  
+  
+    if (!strcmp(method, "GET") && !strcmp(url, "/api")) {  
+        response = api_handler(conn);  
+        mhd_response = MHD_create_response_from_buffer(strlen(response),  
+                                                       response, MHD_RESPMEM_MUST_FREE);  
+        MHD_add_response_header(mhd_response, "Content-Type", "application/json");  
+        ret = MHD_queue_response(connection, MHD_HTTP_OK, mhd_response);  
+        MHD_destroy_response(mhd_response);  
+        return ret;  
+    } else {  
+        mhd_response = MHD_create_response_from_buffer(strlen("Not found"), "Not found",  
+                                                       MHD_RESPMEM_PERSISTENT);  
+        ret = MHD_queue_response(connection, MHD_HTTP_NOT_FOUND, mhd_response);  
+        MHD_destroy_response(mhd_response);  
+        return ret;  
+    }  
+} // end of http_handler
+
+
+
+/**************/
+/*  the main  */
+/**************/
 int main(int argc, char** argv) {  
     char* url = "http://www.ardeshir.io/file.csv";  
     int is_web = 0;  
@@ -203,6 +210,9 @@ int main(int argc, char** argv) {
   
     process_csv_data(url, conn);  
     print_table_api(conn);  
+    
+    // declare before 
+    char* api_handler(PGconn* conn);  
 
 
     // adding http_handler 
