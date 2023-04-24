@@ -18,7 +18,7 @@ void print_table_api(PGconn* conn) {
     printf("Table: api\n");  
     for (int i = 0; i < rows; i++) {  
         for (int j = 0; j < cols; j++) {  
-            printf("%s: %s ", PQfname(res, j), PQgetvalue(res, i, j));  
+            printf("%s: %s \n", PQfname(res, j), PQgetvalue(res, i, j));  
         }  
         printf("\n");  
     }  
@@ -102,7 +102,7 @@ void process_csv_data(char* url, PGconn* conn) {
             while (token != NULL) {  
                 cols[j++] = token;  
                 token = strtok(NULL, ",");  
-                printf("Token %d : %s ", j, token); 
+                printf("Token %d : %s \n", j, token); 
             }  
             char query[200];  
             sprintf(query, "INSERT INTO api (url, name, created) VALUES ('%s', '%s', %s);", cols[1], cols[2], cols[3]);   
@@ -208,11 +208,11 @@ int main(int argc, char** argv) {
     }  
   
     process_csv_data(url, conn);  
-    print_table_api(conn);  
+
+    // print_table_api(conn);  
     
     // declare before 
     char* api_handler(PGconn* conn);  
-
 
     // adding http_handler 
     struct MHD_Daemon* daemon;  
@@ -224,11 +224,11 @@ int main(int argc, char** argv) {
         PQfinish(conn);  
         exit(1);  
     }  
-  
-    printf("Web server running on port 8000...\n");  /// with http_handler
-    
+
+
     if (is_web) {  
         // Start web service  
+        printf("Web server running on port 8000...\n");  /// with http_handler
         json_str = api_handler(conn);  
         printf("API response:\n%s\n", json_str);  
         free(json_str);  
