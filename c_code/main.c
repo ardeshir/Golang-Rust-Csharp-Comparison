@@ -42,6 +42,8 @@ void process_csv_data(char* url, PGconn* conn) {
     if (curl) {  
         curl_easy_setopt(curl, CURLOPT_URL, url);  
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);  
+        // fix for curl
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_callback);  
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);  
         res = curl_easy_perform(curl);  
