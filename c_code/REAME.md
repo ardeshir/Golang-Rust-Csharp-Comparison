@@ -1,3 +1,12 @@
+# C on macOS with MacPort
+- sudo port install curl postgresql15 jansson 
+- CFLAGS = -Wall -Wextra -pedantic -std=c11 -O2  -I/usr/include/postgresql/ -I/opt/local/include/postgresql15/ -I/opt/local/include/ 
+- LDFLAGS = -L/opt/local/lib -ljansson -L/opt/local/lib/postgresql15 -lpq -lcurl 
+- CFLAGS += -I/opt/local/include/postgresql13  
+- CFLAGS += -I/opt/local/include/jansson  
+
+
+# C on linux Ubuntu 
 1. To compile and run the code, you will need to follow the following steps: 
 2. Install the required dependencies:
 - libcurl: sudo apt-get install libcurl4-openssl-dev
