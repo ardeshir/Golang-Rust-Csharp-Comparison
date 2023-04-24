@@ -42,7 +42,6 @@ static size_t curl_callback(void *ptr, size_t size, size_t nmemb, void *userdata
 } 
 
 void process_csv_data(char* url, PGconn* conn) { 
-    printf("<<--||||||  Start of process_csv_data ||||||\n");
     CURL* curl;  
     CURLcode res;  
     char* data = NULL;  
@@ -61,7 +60,7 @@ void process_csv_data(char* url, PGconn* conn) {
         curl_easy_setopt(curl, CURLOPT_URL, url);  
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);  
         // fix for curl
-        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 1);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_callback); 
 
   
