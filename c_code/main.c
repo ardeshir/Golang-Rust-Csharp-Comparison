@@ -48,10 +48,8 @@ void process_csv_data(char* url, PGconn* conn) {
     int i = 0, j = 0;  
     PGresult* res_create;    
     PGresult* res_insert;  
-    // new
     const char* paramValues[3];    
     char* query = "INSERT INTO api (url, name, created) VALUES ($1, $2, $3)";    
-    // PGconn* conn = PQconnectdb(DB_CONN_STRING); 
 
     curl = curl_easy_init();  
 
@@ -111,8 +109,6 @@ void process_csv_data(char* url, PGconn* conn) {
             line = strtok(NULL, "\n");    
         }
 
-        //printf("Rows_len: %d\n", rows_len);
-
         res_create = PQexec(conn, "CREATE TABLE IF NOT EXISTS api (id SERIAL PRIMARY KEY, url TEXT, name TEXT, created INTEGER);");  
         if (PQresultStatus(res_create) != PGRES_COMMAND_OK) {    
             fprintf(stderr, "Error: %s\n", PQerrorMessage(conn));       
@@ -135,8 +131,6 @@ void process_csv_data(char* url, PGconn* conn) {
                 token = strtok(NULL, ",");  
             }  
             if(j == 4) {
-                // char *query = "INSERT INTO api (url, name, created) VALUES ($1, $2, $3)";  
-                // const char *paramValues[3];  
                 paramValues[0] = cols[1];  
                 paramValues[1] = cols[2];  
                 paramValues[2] = cols[3];  
@@ -149,15 +143,12 @@ void process_csv_data(char* url, PGconn* conn) {
             }
 
         }  
-        // PQfinish(conn);
-        // free(data);
         
     }  
     else {  
         fprintf(stderr, "Error: failed to initialize curl\n");  
         return;  
-    }  
-    // curl_easy_cleanup(curl);    
+    }    
 }  
   
 char* api_handler(PGconn* conn) {  
