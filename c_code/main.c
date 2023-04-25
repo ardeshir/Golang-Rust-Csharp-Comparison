@@ -8,39 +8,32 @@
   
 #define DB_CONN_STRING "dbname=data user=postgres password=postgres host=localhost port=5432 sslmode=disable"  
 
-  
-void print_table_api(PGconn* conn) {  
-   
-    PGresult* res = PQexec(conn, "SELECT * FROM api;");  
-    int rows = PQntuples(res);  
-    int cols = PQnfields(res);  
-  
-    printf("Table: api\n");  
-    for (int i = 0; i < rows; i++) {  
-        for (int j = 0; j < cols; j++) {  
-            printf("%s: %s \n", PQfname(res, j), PQgetvalue(res, i, j));  
-        }  
-        printf("\n");  
-    }  
-  
-    PQclear(res);  
-    
-}  
 
-/* static size_t curl_callback(void *contents, size_t size, size_t nmemb, void *userp) {  
-    return size * nmemb;  
-} */
+static size_t curl_callback(void *ptr, size_t size, size_t nmemb, void *userdata) {
+    size_t realsize = size * nmemb;
+        if (realsize == 0) {
+            return 0;
+        }
 
+        char* data = (char*) ptr;
+        fwrite(data, 1, realsize, stdout);
+        printf("\n");
 
-static size_t curl_callback(void *ptr, size_t size, size_t nmemb, void *userdata) {  
-    size_t realsize = size * nmemb;  
-    char* data = (char*) ptr;  
+        char** user_data_ptr = (char**) userdata;
+        if (user_data_ptr == NULL) {
+            return 0;
+        }
 
-    // Write the received data to stdout  
-    // fwrite(data, 1, realsize, stdout); 
-    memcpy(data + strlen(data), ptr, realsize); 
-    
-    return realsize;  
+        char* user_data = (char*) malloc(realsize + 1);
+        if (user_data == NULL) {
+        return 0;
+        }
+
+        memcpy(user_data, data, realsize);
+        user_data[realsize] = '\0';
+
+        *user_data_ptr = user_data;
+        return realsize;
 } 
 
 
@@ -53,77 +46,118 @@ void process_csv_data(char* url, PGconn* conn) {
     size_t line_len = 0;  
     ssize_t read_len;  
     int i = 0, j = 0;  
-    PGresult* res2;  
-  
+    PGresult* res_create;    
+    PGresult* res_insert;  
+    // new
+    const char* paramValues[3];    
+    char* query = "INSERT INTO api (url, name, created) VALUES ($1, $2, $3)";    
+    // PGconn* conn = PQconnectdb(DB_CONN_STRING); 
+
     curl = curl_easy_init();  
+
     if (curl) {  
-        
+        curl_easy_setopt(curl, CURLOPT_CAINFO, "./curl-ca-bundle.crt"); 
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
         // set to 1 for fun
         curl_easy_setopt(curl, CURLOPT_VERBOSE, 0); 
         curl_easy_setopt(curl, CURLOPT_URL, url);  
-        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);  
-        // fix for curl
-        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 1);
+        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L); 
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_callback); 
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data); 
-  
-        // Perform the request  
-        CURLcode res = curl_easy_perform(curl);  
- 
-  
-        curl_easy_setopt(curl, CURLOPT_CAINFO, "./curl-ca-bundle.crt"); 
-        res = curl_easy_perform(curl); 
-                // Cleanup   
-        curl_easy_cleanup(curl);  
+
+
+        CURLcode res = curl_easy_perform(curl); 
   
         if (res != CURLE_OK) {  
             fprintf(stderr, "Error: %s\n", curl_easy_strerror(res));  
             return;  
         }  
-  
-        // Parse CSV data  
-        char** rows = NULL;  
-        int rows_len = 0;  
-        char* token;  
-     
-        token = strtok(data, "\n");  
-        while (token != NULL) {  
-            rows_len++;  
-            rows = (char**)realloc(rows, rows_len * sizeof(char*));  
-            rows[rows_len - 1] = token;  
-            token = strtok(NULL, "\n");  
-            
-        }  
-  
-        res2 = PQexec(conn, "CREATE TABLE IF NOT EXISTS api (id SERIAL PRIMARY KEY, url TEXT, name TEXT, created INTEGER);");  
-  
+
+        // Parse CSV data    
+        char** rows = NULL;    
+        int rows_len = 0;    
+        char* token;    
+        char* line = strtok(data, "\n");    
+        while (line != NULL) {  
+                // Check if the line ends with an odd number of quotes  
+                int quote_count = 0;  
+                for (int i = 0; i < strlen(line); i++) {  
+                        if (line[i] == '"') {  
+                         quote_count++;  
+                        }  
+                }  
+            if (quote_count % 2 == 1) {  
+                // This line contains a multi-line value, so read additional lines until the value is complete  
+                char* next_line = strtok(NULL, "\n");  
+                while (next_line != NULL) {  
+                        strcat(line, "\n");  
+                        strcat(line, next_line);  
+                        quote_count = 0;  
+                        for (int i = 0; i < strlen(line); i++) {  
+                            if (line[i] == '"') {  
+                                quote_count++;  
+                            }  
+                        }  
+                        if (quote_count % 2 == 0) {  
+                        // The multi-line value is complete, so break out of the loop  
+                             break;  
+                        }  
+                        next_line = strtok(NULL, "\n");  
+                }  
+            }  
+            rows_len++;    
+            rows = (char**)realloc(rows, rows_len * sizeof(char*));    
+            rows[rows_len - 1] = line;    
+            line = strtok(NULL, "\n");    
+        }
+
+        //printf("Rows_len: %d\n", rows_len);
+
+        res_create = PQexec(conn, "CREATE TABLE IF NOT EXISTS api (id SERIAL PRIMARY KEY, url TEXT, name TEXT, created INTEGER);");  
+        if (PQresultStatus(res_create) != PGRES_COMMAND_OK) {    
+            fprintf(stderr, "Error: %s\n", PQerrorMessage(conn));       
+            return;    
+        }   
+        res_insert = PQprepare(conn, "", query, 3, NULL);
+
+        if (PQresultStatus(res_insert) != PGRES_COMMAND_OK) {    
+            fprintf(stderr, "Error: %s\n", PQerrorMessage(conn));      
+            return;    
+        } 
+
         for (i = 1; i < rows_len; i++) {  
-            printf("rows_len: %d\n", rows_len);
+           
             char* cols[4];  
             j = 0;  
             token = strtok(rows[i], ",");  
             while (token != NULL) {  
                 cols[j++] = token;  
                 token = strtok(NULL, ",");  
-                printf("Token %d : %s \n", j, token); 
             }  
-            char query[200];  
-            sprintf(query, "INSERT INTO api (url, name, created) VALUES ('%s', '%s', %s);", cols[1], cols[2], cols[3]);   
-            res2 = PQexec(conn, query);  
+            if(j == 4) {
+                // char *query = "INSERT INTO api (url, name, created) VALUES ($1, $2, $3)";  
+                // const char *paramValues[3];  
+                paramValues[0] = cols[1];  
+                paramValues[1] = cols[2];  
+                paramValues[2] = cols[3];  
+                res_insert = PQexecPrepared(conn, "", 3, paramValues, NULL, NULL, 0);  
+                if (PQresultStatus(res_insert) != PGRES_COMMAND_OK) {      
+                    fprintf(stderr, "Error: %s\n", PQerrorMessage(conn));             
+                    return;      
+                }   
+                
+            }
+
         }  
-        PQclear(res2);  
-
-        free(rows);  
-        free(data); 
-
+        // PQfinish(conn);
+        // free(data);
         
     }  
     else {  
         fprintf(stderr, "Error: failed to initialize curl\n");  
         return;  
     }  
-  
-    
+    // curl_easy_cleanup(curl);    
 }  
   
 char* api_handler(PGconn* conn) {  
@@ -155,10 +189,7 @@ char* api_handler(PGconn* conn) {
     PQclear(res);  
 
     return json_str;  
-}  
-
-
-// adding http_hander
+} 
 
 int http_handler(void* cls, struct MHD_Connection* connection,  
                  const char* url, const char* method, const char* version,  
@@ -183,13 +214,8 @@ int http_handler(void* cls, struct MHD_Connection* connection,
         MHD_destroy_response(mhd_response);  
         return ret;  
     }  
-} // end of http_handler
+} 
 
-
-
-/**************/
-/*  the main  */
-/**************/
 int main(int argc, char** argv) {  
     char* url = "http://www.ardeshir.io/file.csv";  
     int is_web = 0;  
@@ -212,12 +238,9 @@ int main(int argc, char** argv) {
   
     process_csv_data(url, conn);  
 
-    print_table_api(conn);  
     
-    // declare before 
     char* api_handler(PGconn* conn);  
 
-    // adding http_handler 
     struct MHD_Daemon* daemon;  
   
     daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY, 8000, NULL, NULL,  
@@ -230,14 +253,12 @@ int main(int argc, char** argv) {
 
 
     if (is_web) {  
-        // Start web service  
-        printf("Web server running on port 8000...\n");  /// with http_handler
+        printf("Web server running on port 8000...\n"); 
         json_str = api_handler(conn);  
-        printf("API response:\n%s\n", json_str);  
         free(json_str);  
     } 
 
-    MHD_stop_daemon(daemon);   /// with http_hander
+    MHD_stop_daemon(daemon); 
     PQfinish(conn);  
   
     return 0;  
