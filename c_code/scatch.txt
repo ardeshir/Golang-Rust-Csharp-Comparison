@@ -1,0 +1,25 @@
+// this is not needed: take out  
+/* void print_table_api(PGconn* conn) {  
+   
+    PGresult* res = PQexec(conn, "SELECT * FROM api;");  
+    int rows = PQntuples(res);  
+    int cols = PQnfields(res);  
+  
+    printf("Table: api\n");  
+
+    for (int i = 0; i < rows; i++) {  
+        for (int j = 0; j < cols; j++) {  
+            printf("%s: %s", PQfname(res, j), PQgetvalue(res, i, j));  
+        }  
+        printf("\n");  
+    }  
+  
+    PQclear(res);  
+    
+} */
+
+// print_table_api(conn);  
+
+//char query[200];  
+//sprintf(query, "INSERT INTO api (url, name, created) VALUES ('%s', '%s', %s);", cols[1], cols[2], cols[3]);   
+//res2 = PQexec(conn, query);  
