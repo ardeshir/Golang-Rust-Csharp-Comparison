@@ -34,4 +34,5 @@ clean:
 4. Run the compiled program by typing ./program in the terminal. 
 5. If you want to pass a URL to process the CSV data from, you can pass it as a command-line argument. 
 - For example, ./main https://www.example.com/file.csv 
-6. If you want to run the program as a web service, pass --web as a command-line argument. For example, ./main http://ardeshir.io/file.csv --web
+6. If you want to run the program as a web service, pass --web as a command-line argument. For example, ./main https://ardeshir.io/file.csv --web
+

@@ -37,9 +37,12 @@ static size_t curl_callback(void *ptr, size_t size, size_t nmemb, void *userdata
     char* data = (char*) ptr;  
 
     // Write the received data to stdout  
-    fwrite(data, 1, realsize, stdout);  
+    // fwrite(data, 1, realsize, stdout); 
+    memcpy(data + strlen(data), ptr, realsize); 
+    
     return realsize;  
 } 
+
 
 void process_csv_data(char* url, PGconn* conn) { 
     CURL* curl;  
@@ -62,12 +65,12 @@ void process_csv_data(char* url, PGconn* conn) {
         // fix for curl
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 1);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_callback); 
-
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data); 
   
         // Perform the request  
         CURLcode res = curl_easy_perform(curl);  
  
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data); 
+  
         curl_easy_setopt(curl, CURLOPT_CAINFO, "./curl-ca-bundle.crt"); 
         res = curl_easy_perform(curl); 
                 // Cleanup   
@@ -209,7 +212,7 @@ int main(int argc, char** argv) {
   
     process_csv_data(url, conn);  
 
-    // print_table_api(conn);  
+    print_table_api(conn);  
     
     // declare before 
     char* api_handler(PGconn* conn);  
