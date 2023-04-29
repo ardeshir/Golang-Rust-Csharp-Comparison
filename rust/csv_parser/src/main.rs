@@ -116,3 +116,5 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     Ok(())
 }
+// error: linking with `x86_64-w64-mingw32-gcc` failed: exit code: 1
+//  note: ld: cannot find -lntdll

@@ -1,6 +1,6 @@
-package main  
-  
-import (  
+package main
+
+import (
     //"bufio"  
     "database/sql"  
     "encoding/csv"  
