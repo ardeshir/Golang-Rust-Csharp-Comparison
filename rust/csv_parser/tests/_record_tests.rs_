@@ -1,0 +1,19 @@
+// tests/record_tests.rs  
+#[cfg(test)]  
+mod record_tests {  
+    use Record;  
+    use csv::StringRecord;  
+  
+    #[test]  
+    fn test_record_from_csv_record() {  
+        // Test valid data  
+        let record = StringRecord::from(vec!["1", "\"https://example.com\"", "\"Example\"", "123456"]);  
+        let result = Record::from_csv_record(record);  
+        assert!(result.is_ok());  
+  
+        // Test invalid data  
+        let record = StringRecord::from(vec!["invalid", "\"https://example.com\"", "\"Example\"", "123456"]);  
+        let result = Record::from_csv_record(record);  
+        assert!(result.is_err());  
+    }  
+} 

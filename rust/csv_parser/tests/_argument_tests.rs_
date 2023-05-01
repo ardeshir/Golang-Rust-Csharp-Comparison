@@ -1,0 +1,30 @@
+// tests/argument_tests.rs  
+#[cfg(test)]  
+mod argument_tests {  
+    use clap::{Command, ArgMatches};  
+  
+    #[test]  
+    fn test_parse_args() {  
+        // Test valid arguments  
+        let args = vec!["app", "--url", "https://example.com"];  
+        let app = Command::new("test").arg("--url <URL>");  
+        let matches = app.get_matches_from(args);  
+        let result = parse_args(matches);  
+        assert!(result.is_ok());  
+          
+        // Test missing argument  
+        let args = vec!["app"];  
+        let app = Command::new("test").arg("--url <URL>");  
+        let matches = app.get_matches_from(args);  
+        let result = parse_args(matches);  
+        assert!(result.is_err());  
+    }  
+  
+    fn parse_args(matches: ArgMatches) -> Result<(), String> {  
+        // Parse arguments  
+        let url = matches.value_of("url").ok_or("missing argument: url")?;  
+  
+        // Do something with the arguments...  
+        Ok(())  
+    }  
+} 
