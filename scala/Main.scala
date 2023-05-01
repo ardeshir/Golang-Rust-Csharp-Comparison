@@ -7,6 +7,7 @@ import com.sun.net.httpserver.{HttpExchange, HttpHandler, HttpServer}
 import io.circe._  
 import io.circe.generic.auto._  
 import io.circe.syntax._  
+
   
 import scala.collection.mutable.ListBuffer  
 import scala.io.Source  
@@ -17,7 +18,7 @@ object Main {
   def main(args: Array[String]): Unit = {  
     val url = "https://www.ardeshir.io/file.csv"  
     val web = false  
-  
+    Class.forName("org.postgresql.Driver")
     val dbProps = new Properties()  
     dbProps.setProperty("user", "postgres")  
     dbProps.setProperty("password", "postgres")  
@@ -49,12 +50,13 @@ object Main {
   
     for (i <- 1 until csvData.size) {  
       val url = csvData(i)(1)  
-      val name = csvData(i)(2)  
-      val created = Instant.parse(csvData(i)(3), dateFormatter)  
+      val name = csvData(i)(2) 
+      val created = csvData(i)(3)  
   
       insertStmt.setString(1, url)  
+  
       insertStmt.setString(2, name)  
-      insertStmt.setTimestamp(3, java.sql.Timestamp.from(created))  
+      insertStmt.setString(3, created)  
   
       insertStmt.executeUpdate()  
     }  
@@ -92,7 +94,7 @@ object Main {
         |  id SERIAL PRIMARY KEY,    
         |  url TEXT,    
         |  name TEXT,    
-        |  created TIMESTAMP    
+        |  created INTEGER     
         |)    
         |""".stripMargin  
   
@@ -158,7 +160,8 @@ object Main {
       resultSet.close()  
       statement.close()  
   
-      val response = Json.encodeToString(apiList)  
+      // val response = Json.encodeToString(apiList)  
+      val response = Printer.noSpaces.copy(dropNullValues = true).print(apiList.asJson)
       httpExchange.getResponseHeaders.set("Content-Type", "application/json")  
       httpExchange.sendResponseHeaders(200, response.getBytes.length)  
       val outputStream = httpExchange.getResponseBody  
