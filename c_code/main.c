@@ -59,12 +59,11 @@ void process_csv_data(char* url, PGconn* conn) {
         // set to 1 for fun
         curl_easy_setopt(curl, CURLOPT_VERBOSE, 0); 
         curl_easy_setopt(curl, CURLOPT_URL, url);  
-        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L); 
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_callback); 
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data); 
-
-
-        CURLcode res = curl_easy_perform(curl); 
+        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);  
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_callback);  
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);  
+        res = curl_easy_perform(curl);  
+        curl_easy_cleanup(curl);  
   
         if (res != CURLE_OK) {  
             fprintf(stderr, "Error: %s\n", curl_easy_strerror(res));  
