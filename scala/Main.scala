@@ -4,16 +4,16 @@ import java.time.{Instant, format}
 import java.util.Properties  
   
 import com.sun.net.httpserver.{HttpExchange, HttpHandler, HttpServer}  
-import io.circe._  
-import io.circe.generic.auto._  
-import io.circe.syntax._  
+import _root_.io.circe._  
+import _root_.io.circe.generic.auto._  
+import _root_.io.circe.syntax._  
 
   
-import scala.collection.mutable.ListBuffer  
-import scala.io.Source  
+import _root_.scala.collection.mutable.ListBuffer  
+import _root_.scala.io.Source  
   
 object Main {  
-  case class Api(id: Int, url: String, name: String, created: Instant)  
+  case class Api(id: Int, url: String, name: String, created: String)  
   
   def main(args: Array[String]): Unit = {  
     val url = "https://www.ardeshir.io/file.csv"  
@@ -94,7 +94,7 @@ object Main {
         |  id SERIAL PRIMARY KEY,    
         |  url TEXT,    
         |  name TEXT,    
-        |  created INTEGER     
+        |  created TEXT     
         |)    
         |""".stripMargin  
   
@@ -114,7 +114,7 @@ object Main {
       val id = resultSet.getInt("id")  
       val url = resultSet.getString("url")  
       val name = resultSet.getString("name")  
-      val created = resultSet.getTimestamp("created").toInstant  
+      val created = resultSet.getString("created") 
   
       val api = Api(id, url, name, created)  
       apiList += api  
@@ -151,7 +151,7 @@ object Main {
         val id = resultSet.getInt("id")  
         val url = resultSet.getString("url")  
         val name = resultSet.getString("name")  
-        val created = resultSet.getTimestamp("created").toInstant  
+        val created = resultSet.getString("created")  
   
         val api = Api(id, url, name, created)  
         apiList += api  
