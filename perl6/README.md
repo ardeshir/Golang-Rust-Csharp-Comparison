@@ -31,3 +31,30 @@ Install the required Perl6 modules by running the following command in the Comma
 4. Save the Perl6 code into a file, e.g. csv_parser.p6. 
 Run the Perl6 code by opening the Command Prompt and running the following command: 
 - perl6 csv_parser.p6  
+
+# DOCS from Rakudo Bundle
+## Perl 6 is best used from the command line or inside an editor such as Atom,
+- Emacs or Vim etc. It is not a full Mac GUI type app.
+
+You may need to relax security permissions under "System Prefs>Security &
+Privacy>General" to allow the use of unsigned third party apps for some uses.
+
+1. Drag the 'Rakudo' folder onto the '/Applications' folder. Note this 
+is the root Applications directory and other locations won't work.
+
+2. Drag the 'Docs' folder somewhere.
+
+3. In a Terminal window add Rakudo Star to your path:
+
+   - export PATH=$PATH:/Applications/Rakudo/bin:/Applications/Rakudo/share/perl6/site/bin
+
+   Test with:
+
+   - perl6 -e 'say "Hello, world!";'
+
+4. Add the 'export' line above to .bash_profile or similar to persist.
+
+5. Useful commands are 'p6doc' and 'zef'.
+
+6. See also the documents in the 'Docs' folder and http://perl6.org
+

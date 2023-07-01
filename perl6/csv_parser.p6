@@ -12,7 +12,7 @@ sub print_table_api($db_conn_string) {
     say "Table: api";  
     for @rows -> $row {  
         for $row.list -> $col {  
-            say "{$columns[$++]}: $col";  
+            say "{@columns[$++]} // ''}: $col ";  
         }  
         say '';  
     }  
